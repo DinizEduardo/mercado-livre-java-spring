@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "clientes")
@@ -26,6 +27,10 @@ public class Cliente {
     private String senha;
 
     private LocalDateTime dataCriacao = LocalDateTime.now();
+
+    @Deprecated
+    public Cliente() {
+    }
 
     public Cliente(String email, String senha) {
         this.email = email;
@@ -46,5 +51,18 @@ public class Cliente {
 
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cliente)) return false;
+        Cliente cliente = (Cliente) o;
+        return Objects.equals(getId(), cliente.getId()) && Objects.equals(getEmail(), cliente.getEmail()) && Objects.equals(getSenha(), cliente.getSenha()) && Objects.equals(getDataCriacao(), cliente.getDataCriacao());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getEmail(), getSenha(), getDataCriacao());
     }
 }
