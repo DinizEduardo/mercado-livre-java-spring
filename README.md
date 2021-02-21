@@ -1,10 +1,10 @@
 # Mercado Livre
 
 ## 0-0-0-setup
-Nessa tarefa precisamos criar um projeto para atender as funcionalidades da **Mercado Livre**, para tal, temos alguns pré requisitos de linguagem de programação e tecnologia, pois precisamos que esse projeto seja evoluído e mantido por anos, portanto é extremamente importante a escolha das mesmas.
-
-Utilizar o [Spring Initializr](https://start.spring.io/)
-
+  Nessa tarefa precisamos criar um projeto para atender as funcionalidades da **Mercado Livre**, para tal, temos alguns pré requisitos de linguagem de programação e tecnologia, pois precisamos que esse projeto seja evoluído e mantido por anos, portanto é extremamente importante a escolha das mesmas.
+  
+  Utilizar o [Spring Initializr](https://start.spring.io/)
+  
 ## 0-1-1-cadastro-usuario
 
 ### Necessidades
@@ -101,7 +101,7 @@ Aqui a gente vai permitir o cadastro de um produto por usuário logado.
 
 ### Explicação
 
-Com um produto cadastrado, um usuário logado pode adicionar imagens ao seu produto. Não precisa salvar a imagem em algum cloud ou no próprio sistema de arquivos. Cada arquivo de imagem pode virar um link ficticio que pode ser adicionado ao produto.
+Com um produto cadastrado, um usuário logado pode adicionar imagens ao seu produto. Não precisa salvar a imagem em algum cloud ou no próprio sistema de arquivos. Cada arquivo de imagem pode virar um link ficticio que pode ser adicionado ao produto. 
 
 ### **necessidades**
 
@@ -202,7 +202,7 @@ Então essa é a parte 1 do processo de finalização de compra. Onde apenas ger
 ### Necessidades
 
 *   A pessoa pode escolher a quantidade de itens daquele produto que ela quer comprar
-*   O estoque do produto é abatido
+*   O estoque do produto é abatido 
 *   Um email é enviado para a pessoa que é dona(o) do produto informando que um usuário realmente disse que queria comprar seu produto.
 *   Uma compra é gerada informando o status INICIADA e com as seguintes informações:
 *   gateway escolhido para pagamento
@@ -223,7 +223,7 @@ Então essa é a parte 1 do processo de finalização de compra. Onde apenas ger
     *   Retorne o endereço da seguinte maneira: paypal.com/{idGeradoDaCompra}?redirectUrl={urlRetornoAppPosPagamento}
 *   Caso a pessoa escolha o pagseguro o seu endpoint deve gerar o seguinte redirect(302):
     *   Retorne o endereço da seguinte maneira: pagseguro.com?returnId={idGeradoDaCompra}&redirectUrl={urlRetornoAppPosPagamento}
-*   Caso aconteça alguma restrição retorne um status 400 informando os problemas.
+*   Caso aconteça alguma restrição retorne um status 400 informando os problemas. 
 
 ### Informações que já temos como retornar
 
