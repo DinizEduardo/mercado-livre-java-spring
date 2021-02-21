@@ -3,7 +3,6 @@ package br.com.zup.mercadolivre.mercadoLivre.controller;
 import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
 import br.com.zup.mercadolivre.mercadoLivre.model.request.ClienteRequest;
 import br.com.zup.mercadolivre.mercadoLivre.model.response.ClienteResponse;
-import br.com.zup.mercadolivre.mercadoLivre.repository.ClienteRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
