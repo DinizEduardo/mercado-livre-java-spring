@@ -1,9 +1,17 @@
-package br.com.zup.mercadolivre.mercadoLivre.controller;
+package br.com.zup.mercadolivre.mercadoLivre.shared.security;
+
+import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
 import br.com.zup.mercadolivre.mercadoLivre.utils.JsonDataBuilder;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -14,18 +22,31 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @AutoConfigureDataJpa
+@SpringBootTest
+@AutoConfigureTestEntityManager
 @Transactional
-public class ClienteControllerTest {
+public class ClienteAuthTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TestEntityManager manager;
+
+    @Before
+    public void before() {
+        Cliente cliente = new Cliente("email@email.com", "123456");
+        manager.persist(cliente);
+    }
 
     private void performRequest(URI uri, String json, int status) throws Exception {
         mockMvc
@@ -38,65 +59,65 @@ public class ClienteControllerTest {
                         .is(status));
     }
 
+
+    // Valida autenticador
+
     @Test
-    public void deveriaRetornarStatus400CasoDadosDeCadastroDeClienteInvalidos() throws Exception {
-        URI uri = new URI("/clientes");
+    public void deveriaRetornarStatus400LogandoSemASenha() throws Exception {
+        URI uri = new URI("/auth");
 
         String json = new JsonDataBuilder()
-                .chaveValor("email", "")
+                .chaveValor("email", "email@email.com")
                 .chaveValor("senha", "")
                 .constroi();
 
         performRequest(uri, json, 400);
-
     }
 
-    @Test
-    public void deveriaRetornarStatus400ComEmailInvalido() throws Exception {
-        URI uri = new URI("/clientes");
+    // Valida autenticador
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "semEmail")
-                .chaveValor("senha", "123456")
-                .constroi();
+    @Test
+    public void deveriaRetornarStatus400LogandoSemOEmail() throws Exception {
+        URI uri = new URI("/auth");
+
+        String json = "{\"email\": \"\", \"senha\": \"123456\"}";
 
         performRequest(uri, json, 400);
     }
 
-    @Test
-    public void deveriaRetornarStatus400ComSenhaPequena() throws  Exception {
-        URI uri = new URI("/clientes");
+    // Valida autenticador
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "12345")
-                .constroi();
+    @Test
+    public void naoDeveriaLogarComDadosIncorretos() throws Exception {
+        URI uri = new URI("/auth");
+
+        String json = "{\"email\": \"email@email.com\", \"senha\": \"1234567\"}";
 
         performRequest(uri, json, 400);
     }
 
-    @Test
-    public void deveriaCadastrarUsuarioComDadosValidos() throws Exception {
-        URI uri = new URI("/clientes");
+    // Valida autenticador
 
+    @Test
+    public void deveriaLogarComDadosCorretos() throws Exception {
         String json = new JsonDataBuilder()
                 .chaveValor("email", "email@email.com")
                 .chaveValor("senha", "123456")
                 .constroi();
 
-        performRequest(uri, json, 201);
+        URI uri = new URI("/auth");
+
+        performRequest(uri, json, 200);
     }
 
     @Test
-    public void naoDeveriaCadastrarUsuarioComEmailDuplicado() throws Exception {
-        URI uri = new URI("/clientes");
+    public void naoDeveriaLogarComSenhaIncorreta() throws Exception {
+        URI uri = new URI("/auth");
 
         String json = new JsonDataBuilder()
                 .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "123456")
+                .chaveValor("senha", "1234567")
                 .constroi();
-
-        performRequest(uri, json, 201);
 
         performRequest(uri, json, 400);
     }
