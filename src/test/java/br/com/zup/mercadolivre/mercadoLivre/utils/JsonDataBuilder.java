@@ -14,6 +14,16 @@ public class JsonDataBuilder {
         return this;
     }
 
+    public JsonDataBuilder chaveValor(String chave, long valor) {
+        if(!json.equals("{")) {
+            this.json += ", ";
+        }
+        this.json += "\"" + chave + "\" : " + valor;
+        return this;
+    }
+
+
+
     public String constroi() {
         json += "}";
         return json;

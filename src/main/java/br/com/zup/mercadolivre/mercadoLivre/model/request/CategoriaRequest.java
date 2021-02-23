@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.mercadoLivre.model.request;
 
 import br.com.zup.mercadolivre.mercadoLivre.model.Categoria;
+import br.com.zup.mercadolivre.mercadoLivre.shared.ExistsId;
 import br.com.zup.mercadolivre.mercadoLivre.shared.UniqueValue;
 import org.springframework.util.Assert;
 
@@ -15,13 +16,16 @@ public class CategoriaRequest {
     @UniqueValue(domainClass = Categoria.class, fieldName = "nome")
     private String nome;
 
+    @ExistsId(domainClass = Categoria.class, fieldName = "id")
     private Long idCategoriaMae;
 
     public Categoria toModel(EntityManager manager) {
         Categoria categoria = new Categoria(nome);
         if(this.idCategoriaMae != null) {
-            Categoria categoriaMae = manager.find(Categoria.class, idCategoriaMae);
-            Assert.notNull(categoriaMae, "O id da categoria mãe precisa ser valido");
+            @NotNull Categoria categoriaMae = manager.find(Categoria.class, idCategoriaMae);
+
+            Assert.state(categoriaMae != null, "Você está tentando cadastrar uma categoria com id mãe invalido");
+
             categoria.setCategoriaMae(categoriaMae);
         }
 
