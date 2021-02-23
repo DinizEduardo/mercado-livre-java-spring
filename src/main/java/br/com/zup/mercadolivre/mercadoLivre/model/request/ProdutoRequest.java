@@ -81,11 +81,7 @@ public class ProdutoRequest {
                 .map(Caracteristica::new)
                 .collect(Collectors.toList());
 
-        Produto produto = new Produto(nome, valor, quantidade,
+        return new Produto(nome, valor, quantidade,
                 caracteristicasModel, descricao, categoria);
-
-        caracteristicasModel.forEach(caracteristica -> caracteristica.setProduto(produto));
-
-        return produto;
     }
 }

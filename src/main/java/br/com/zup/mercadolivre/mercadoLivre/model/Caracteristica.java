@@ -39,4 +39,29 @@ public class Caracteristica {
         this.nome = caracteristicaRequest.getNome();
         this.valor = caracteristicaRequest.getValor();
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    @Override
+    public String toString() {
+        return "Caracteristica{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", valor='" + valor + '\'' +
+                '}';
+    }
 }

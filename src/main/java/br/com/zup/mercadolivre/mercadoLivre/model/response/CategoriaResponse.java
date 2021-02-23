@@ -18,4 +18,16 @@ public class CategoriaResponse {
 
     public CategoriaResponse() {
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
 }

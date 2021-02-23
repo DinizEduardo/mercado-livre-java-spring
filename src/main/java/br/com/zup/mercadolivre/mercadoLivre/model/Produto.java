@@ -22,7 +22,7 @@ public class Produto {
 
     private int quantidade;
 
-    @OneToMany(mappedBy = "produto")
+    @OneToMany(mappedBy = "produto", cascade = {CascadeType.PERSIST})
     private List<Caracteristica> caracteristicas;
 
     private String descricao;
