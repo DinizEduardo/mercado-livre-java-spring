@@ -38,8 +38,6 @@ public class TokenManager {
 
     public boolean isValid(String jwt) {
         try {
-            String withoutBearer = jwt.replace("Bearer","");
-            System.out.println("Secret -> " + this.secret);
             Jwts.parser().setSigningKey(this.secret).parseClaimsJws(jwt);
             return true;
 

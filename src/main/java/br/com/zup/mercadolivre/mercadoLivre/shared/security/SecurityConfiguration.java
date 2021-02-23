@@ -48,23 +48,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter  {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/produtos/{id:[0-9]+}").permitAll()
                 .antMatchers(HttpMethod.POST, "/clientes").permitAll()
                 .antMatchers("/auth").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .cors()
                 .and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(tokenManager, usersService),
-                        UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint());
+                        UsernamePasswordAuthenticationFilter.class);
 
     }
 
