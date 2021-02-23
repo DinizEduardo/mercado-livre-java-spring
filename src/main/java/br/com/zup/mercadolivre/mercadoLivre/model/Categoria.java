@@ -1,5 +1,7 @@
 package br.com.zup.mercadolivre.mercadoLivre.model;
 
+import br.com.zup.mercadolivre.mercadoLivre.model.request.CaracteristicaRequest;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +23,7 @@ public class Categoria {
         this.categoriaMae = categoriaMae;
     }
 
+    @Deprecated
     public Categoria() {
     }
 
