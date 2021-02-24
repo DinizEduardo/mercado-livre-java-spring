@@ -39,6 +39,21 @@ public class ProdutoControllerTest {
 
     private Categoria categoriaMae;
 
+    private String[] caracteristicas = {
+            new JsonDataBuilder()
+                    .chaveValor("nome", "altura")
+                    .chaveValor("valor", "10cm")
+                    .constroi(),
+            new JsonDataBuilder()
+                    .chaveValor("nome", "largura")
+                    .chaveValor("valor", "10cm")
+                    .constroi(),
+            new JsonDataBuilder()
+                    .chaveValor("nome", "diametro")
+                    .chaveValor("valor", "10cm")
+                    .constroi(),
+    };
+
     @BeforeEach
     public void before() {
         Cliente cliente = new Cliente("email@email.com", "123456");
@@ -60,29 +75,129 @@ public class ProdutoControllerTest {
                         .is(status));
     }
 
+    @Test
+    public void naoDeveriaCadastrarProdutoComUsuarioInexistente() throws Exception{
+        String json = new JsonDataBuilder()
+                .chaveValor("nome", "mouse")
+                .chaveValor("valor", 200)
+                .chaveValor("quantidade", 10)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("idCategoria", this.categoriaMae.getId())
+                .chaveValor("caracteristicas", caracteristicas)
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 403);
+    }
+
+    @Test
+    @WithUserDetails("teste@logado.com")
+    public void naoDeveriaCadastrarProdutoSemNome() throws Exception {
+        String json = new JsonDataBuilder()
+                .chaveValor("valor", 200)
+                .chaveValor("quantidade", 10)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("idCategoria", this.categoriaMae.getId())
+                .chaveValor("caracteristicas", caracteristicas)
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 400);
+    }
+
+    @Test
+    @WithUserDetails("teste@logado.com")
+    public void naoDeveriaCadastrarProdutoSemValor() throws Exception {
+        String json = new JsonDataBuilder()
+                .chaveValor("nome", "mouse")
+                .chaveValor("quantidade", 10)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("idCategoria", this.categoriaMae.getId())
+                .chaveValor("caracteristicas", caracteristicas)
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 400);
+
+    }
+
+    @Test
+    @WithUserDetails("teste@logado.com")
+    public void naoDeveriaCadastrarProdutoComQtdNegativa() throws Exception {
+        String json = new JsonDataBuilder()
+                .chaveValor("nome", "mouse")
+                .chaveValor("valor", 200)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("quantidade", -1)
+                .chaveValor("idCategoria", this.categoriaMae.getId())
+                .chaveValor("caracteristicas", caracteristicas)
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 400);
+    }
+
+    @Test
+    @WithUserDetails("teste@logado.com")
+    public void naoDeveriaCadastrarProdutoSemCategoria() throws Exception {
+        String json = new JsonDataBuilder()
+                .chaveValor("nome", "mouse")
+                .chaveValor("valor", 200)
+                .chaveValor("quantidade", 10)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("caracteristicas", caracteristicas)
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 400);
+
+    }
+
+    @Test
+    @WithUserDetails("teste@logado.com")
+    public void naoDeveriaCadastrarProdutoComIdCategoriaInvalido() throws Exception {
+        String json = new JsonDataBuilder()
+                .chaveValor("nome", "mouse")
+                .chaveValor("valor", 200)
+                .chaveValor("quantidade", 10)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("idCategoria", this.categoriaMae.getId() + 1)
+                .chaveValor("caracteristicas", caracteristicas)
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 400);
+
+    }
+
+    @Test
+    @WithUserDetails("teste@logado.com")
+    public void naoDeveriaCadastrarProdutoSemCaracteristicas() throws Exception {
+        String json = new JsonDataBuilder()
+                .chaveValor("nome", "mouse")
+                .chaveValor("valor", 200)
+                .chaveValor("quantidade", 10)
+                .chaveValor("descricao", "Descrição do mouse")
+                .chaveValor("idCategoria", this.categoriaMae.getId())
+                .chaveValor("caracteristicas", "")
+                .constroi();
+
+        URI uri = new URI("/produtos");
+
+        ResultActions result = performRequest(uri, json, 400);
+
+    }
+
 
     @Test
     @WithUserDetails("teste@logado.com")
     public void deveriaCadastrarUmNovoProduto() throws Exception {
-        Cliente cliente = new Cliente("email@email.com", "123456");
-        manager.persist(cliente);
-
-
-        String[] caracteristicas = {
-                new JsonDataBuilder()
-                        .chaveValor("nome", "altura")
-                        .chaveValor("valor", "10cm")
-                        .constroi(),
-                new JsonDataBuilder()
-                        .chaveValor("nome", "largura")
-                        .chaveValor("valor", "10cm")
-                        .constroi(),
-                new JsonDataBuilder()
-                        .chaveValor("nome", "diametro")
-                        .chaveValor("valor", "10cm")
-                        .constroi(),
-        };
-
         String json = new JsonDataBuilder()
                 .chaveValor("nome", "mouse")
                 .chaveValor("valor", 200)
