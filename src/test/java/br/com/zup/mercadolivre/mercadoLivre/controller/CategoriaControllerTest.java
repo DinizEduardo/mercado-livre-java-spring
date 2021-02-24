@@ -4,9 +4,8 @@ import br.com.zup.mercadolivre.mercadoLivre.model.Categoria;
 import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
 import br.com.zup.mercadolivre.mercadoLivre.utils.JsonDataBuilder;
 import org.apache.tomcat.util.json.JSONParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
@@ -28,7 +27,6 @@ import java.net.URI;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @AutoConfigureDataJpa
@@ -45,7 +43,7 @@ public class CategoriaControllerTest {
 
     private Categoria categoriaMae;
 
-    @Before
+    @BeforeEach
     public void before() {
         Cliente cliente = new Cliente("email@email.com", "123456");
         manager.persist(cliente);

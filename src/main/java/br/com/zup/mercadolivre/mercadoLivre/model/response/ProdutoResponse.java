@@ -20,6 +20,8 @@ public class ProdutoResponse {
 
     private CategoriaResponse categoria;
 
+    private ClienteResponse cliente;
+
 
     public ProdutoResponse(Produto produto) {
         this.nome = produto.getNome();
@@ -33,6 +35,12 @@ public class ProdutoResponse {
         this.descricao = produto.getDescricao();
         this.categoria = new CategoriaResponse(produto.getCategoria());
 
+        this.cliente = new ClienteResponse(produto.getCliente());
+
+    }
+
+    public ClienteResponse getCliente() {
+        return cliente;
     }
 
     public String getNome() {

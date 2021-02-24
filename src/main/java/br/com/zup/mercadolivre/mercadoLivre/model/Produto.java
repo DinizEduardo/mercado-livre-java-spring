@@ -35,6 +35,10 @@ public class Produto {
     @ManyToOne
     private Cliente cliente;
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
     public Produto(String nome,
                    double valor,
                    int quantidade,

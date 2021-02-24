@@ -2,11 +2,8 @@ package br.com.zup.mercadolivre.mercadoLivre.shared.security;
 
 import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
 import br.com.zup.mercadolivre.mercadoLivre.utils.JsonDataBuilder;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
@@ -27,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 
-@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @AutoConfigureDataJpa
@@ -42,7 +38,7 @@ public class ClienteAuthTest {
     @Autowired
     private TestEntityManager manager;
 
-    @Before
+    @BeforeEach
     public void before() {
         Cliente cliente = new Cliente("email@email.com", "123456");
         manager.persist(cliente);

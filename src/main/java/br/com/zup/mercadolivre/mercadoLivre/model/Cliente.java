@@ -65,4 +65,14 @@ public class Cliente {
     public int hashCode() {
         return Objects.hash(getId(), getEmail(), getSenha(), getDataCriacao());
     }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", dataCriacao=" + dataCriacao +
+                '}';
+    }
 }

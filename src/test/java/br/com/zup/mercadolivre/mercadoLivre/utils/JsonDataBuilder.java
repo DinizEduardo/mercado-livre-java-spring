@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.mercadoLivre.utils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class JsonDataBuilder {
 
@@ -11,6 +12,24 @@ public class JsonDataBuilder {
             this.json += ", ";
         }
         this.json += "\"" + chave + "\" : \"" + valor + "\"";
+        return this;
+    }
+
+    public JsonDataBuilder chaveValor(String chave, String[] list) {
+        if(!json.equals("{")) {
+            this.json += ", ";
+        }
+        this.json += "\"" + chave + "\" : [";
+        int n = 0;
+
+        for (String s : list) {
+            if(n != 0) {
+                this.json += ", ";
+            }
+            this.json += s;
+            n++;
+        }
+        this.json += "]";
         return this;
     }
 

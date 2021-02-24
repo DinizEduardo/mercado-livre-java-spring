@@ -7,6 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +30,8 @@ public class UsersService implements UserDetailsService {
 
         List<?> objects = manager.createQuery(query)
                 .setParameter("username", username).getResultList();
+
+//        System.out.println("TEntando encontrar user by username");
         Assert.isTrue(objects.size() <= 1,
                 "[BUG] mais de um autenticável tem o mesmo username. "
                         + username);
