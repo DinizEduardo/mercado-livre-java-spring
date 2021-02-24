@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "produtos")
@@ -35,6 +37,9 @@ public class Produto {
     @ManyToOne
     private Cliente cliente;
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private Set<ImagemProduto> imagens;
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -59,6 +64,10 @@ public class Produto {
 
         this.cliente = logado.get();
 
+    }
+
+    public Set<ImagemProduto> getImagens() {
+        return imagens;
     }
 
     public Long getId() {
@@ -105,5 +114,33 @@ public class Produto {
                 ", categoria=" + categoria +
                 ", criacao=" + criacao +
                 '}';
+    }
+
+    public Produto() {
+    }
+
+    public boolean pertenceAoCliente(Cliente cliente) {
+        return this.cliente.equals(cliente);
+
+        // igual     -> true
+        // diferente -> false
+
+    }
+
+    public void associaImagens(Set<String> links) {
+        Set<ImagemProduto> imagens = links.stream()
+                .map(link -> new ImagemProduto(this, link))
+                .collect(Collectors.toSet());
+
+        this.imagens.addAll(imagens);
+
+    }
+
+    public boolean pertenceAoClienteLogado() {
+        ClienteLogado logado = (ClienteLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Cliente cliente = logado.get();
+
+        return this.cliente.equals(cliente);
     }
 }

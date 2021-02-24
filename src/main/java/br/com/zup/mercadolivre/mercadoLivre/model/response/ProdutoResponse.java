@@ -1,10 +1,13 @@
 package br.com.zup.mercadolivre.mercadoLivre.model.response;
 
 import br.com.zup.mercadolivre.mercadoLivre.model.Caracteristica;
+import br.com.zup.mercadolivre.mercadoLivre.model.ImagemProduto;
 import br.com.zup.mercadolivre.mercadoLivre.model.Produto;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ProdutoResponse {
 
@@ -22,6 +25,8 @@ public class ProdutoResponse {
 
     private ClienteResponse cliente;
 
+    private Set<ImagemProduto> imagens;
+
 
     public ProdutoResponse(Produto produto) {
         this.nome = produto.getNome();
@@ -37,10 +42,16 @@ public class ProdutoResponse {
 
         this.cliente = new ClienteResponse(produto.getCliente());
 
+        this.imagens = produto.getImagens();
+
     }
 
     public ClienteResponse getCliente() {
         return cliente;
+    }
+
+    public Set<ImagemProduto> getImagens() {
+        return imagens;
     }
 
     public String getNome() {
