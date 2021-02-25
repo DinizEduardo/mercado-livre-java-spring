@@ -1,28 +1,27 @@
 package br.com.zup.mercadolivre.mercadoLivre.shared.security;
 
 import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
-import br.com.zup.mercadolivre.mercadoLivre.utils.JsonDataBuilder;
+import br.com.zup.mercadolivre.mercadoLivre.model.request.ClienteRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
+
+import static br.com.zup.mercadolivre.mercadoLivre.utils.MockMvcRequest.performPost;
 
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -38,84 +37,50 @@ public class ClienteAuthTest {
     @Autowired
     private TestEntityManager manager;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+
     @BeforeEach
     public void before() {
         Cliente cliente = new Cliente("email@email.com", "123456");
         manager.persist(cliente);
     }
 
-    private void performRequest(URI uri, String json, int status) throws Exception {
-        mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post(uri)
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .is(status));
-    }
-
-
-    // Valida autenticador
-
+//
+//
+//    // Valida autenticador
+//
     @Test
     public void deveriaRetornarStatus400LogandoSemASenha() throws Exception {
-        URI uri = new URI("/auth");
+        ClienteRequest request = new ClienteRequest("email@email.com", "");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "")
-                .constroi();
+        performPost(mockMvc, "/auth", 400, objectMapper, request);
 
-        performRequest(uri, json, 400);
-    }
-
-    // Valida autenticador
-
-    @Test
-    public void deveriaRetornarStatus400LogandoSemOEmail() throws Exception {
-        URI uri = new URI("/auth");
-
-        String json = "{\"email\": \"\", \"senha\": \"123456\"}";
-
-        performRequest(uri, json, 400);
-    }
-
-    // Valida autenticador
-
-    @Test
-    public void naoDeveriaLogarComDadosIncorretos() throws Exception {
-        URI uri = new URI("/auth");
-
-        String json = "{\"email\": \"email@email.com\", \"senha\": \"1234567\"}";
-
-        performRequest(uri, json, 400);
-    }
-
-    // Valida autenticador
-
-    @Test
-    public void deveriaLogarComDadosCorretos() throws Exception {
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "123456")
-                .constroi();
-
-        URI uri = new URI("/auth");
-
-        performRequest(uri, json, 200);
     }
 
     @Test
-    public void naoDeveriaLogarComSenhaIncorreta() throws Exception {
-        URI uri = new URI("/auth");
+    public void deveriaRetornarStatus400LogandoSemASenhaESemEmail() throws Exception {
+        ClienteRequest request = new ClienteRequest("", "");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "1234567")
-                .constroi();
+        performPost(mockMvc, "/auth", 400, objectMapper, request);
 
-        performRequest(uri, json, 400);
+    }
+
+    @Test
+    public void deveriaRetornarStatus400LogandoComDadosInvalidos() throws Exception {
+        ClienteRequest request = new ClienteRequest("email@email.com", "1234567");
+
+        performPost(mockMvc, "/auth", 400, objectMapper, request);
+
+    }
+
+    @Test
+    public void deveriaRetornar200LogandoComDadosValidos() throws Exception {
+        ClienteRequest request = new ClienteRequest("email@email.com", "123456");
+
+        performPost(mockMvc, "/auth", 200, objectMapper, request);
+
     }
 
 }

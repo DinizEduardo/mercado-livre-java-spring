@@ -1,5 +1,8 @@
 package br.com.zup.mercadolivre.mercadoLivre.model;
 
+import br.com.zup.mercadolivre.mercadoLivre.shared.ClienteLogado;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.persistence.*;
 
 @Entity
@@ -27,6 +30,13 @@ public class Opiniao {
         this.titulo = titulo;
         this.descricao = descricao;
         this.produto = produto;
+
+        if(cliente == null) {
+            ClienteLogado logado = (ClienteLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            cliente = logado.get();
+        }
+
         this.cliente = cliente;
     }
 

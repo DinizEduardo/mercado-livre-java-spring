@@ -61,6 +61,19 @@ public class ProdutoRequest {
         return idCategoria;
     }
 
+    @Deprecated
+    public ProdutoRequest() {
+    }
+
+    public ProdutoRequest(@NotBlank String nome, @NotNull @Min(1) double valor, @NotNull @Min(0) int quantidade, @Size(min = 3) List<CaracteristicaRequest> caracteristicas, @NotBlank String descricao, @NotNull long idCategoria) {
+        this.nome = nome;
+        this.valor = valor;
+        this.quantidade = quantidade;
+        this.caracteristicas = caracteristicas;
+        this.descricao = descricao;
+        this.idCategoria = idCategoria;
+    }
+
     @Override
     public String toString() {
         return "ProdutoRequest{" +

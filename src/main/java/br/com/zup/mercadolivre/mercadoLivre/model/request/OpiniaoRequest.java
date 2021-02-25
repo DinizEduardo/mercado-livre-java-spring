@@ -28,7 +28,7 @@ public class OpiniaoRequest {
     public OpiniaoRequest() {
     }
 
-    public OpiniaoRequest(@NotNull @Min(1) @Max(5) Integer nota, @NotBlank String titulo, @NotBlank @Size(max = 500) String descricao, @NotNull Long idCliente) {
+    public OpiniaoRequest(@NotNull @Min(1) @Max(5) Integer nota, @NotBlank String titulo, @NotBlank @Size(max = 500) String descricao) {
         this.nota = nota;
         this.titulo = titulo;
         this.descricao = descricao;

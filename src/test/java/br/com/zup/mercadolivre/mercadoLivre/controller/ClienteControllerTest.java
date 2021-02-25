@@ -1,5 +1,11 @@
 package br.com.zup.mercadolivre.mercadoLivre.controller;
-import br.com.zup.mercadolivre.mercadoLivre.utils.JsonDataBuilder;
+import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
+import br.com.zup.mercadolivre.mercadoLivre.model.request.ClienteRequest;
+import br.com.zup.mercadolivre.mercadoLivre.utils.MockMvcRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -7,13 +13,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.net.URI;
+import java.util.List;
+
+import static br.com.zup.mercadolivre.mercadoLivre.utils.MockMvcRequest.performPost;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -25,78 +34,48 @@ public class ClienteControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private void performRequest(URI uri, String json, int status) throws Exception {
-        mockMvc
-                .perform(MockMvcRequestBuilders
-                        .post(uri)
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .is(status));
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private EntityManager manager;
 
     @Test
-    public void deveriaRetornarStatus400CasoDadosDeCadastroDeClienteInvalidos() throws Exception {
-        URI uri = new URI("/clientes");
+    public void naoDeveriaCadastrarCasoNaoPasseNenhumEmailENenhumaSenha() throws Exception {
+        ClienteRequest request = new ClienteRequest("", "");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "")
-                .chaveValor("senha", "")
-                .constroi();
-
-        performRequest(uri, json, 400);
-
+        performPost(mockMvc, "/clientes", 400, objectMapper, request);
     }
 
+//
     @Test
     public void deveriaRetornarStatus400ComEmailInvalido() throws Exception {
-        URI uri = new URI("/clientes");
+        ClienteRequest request = new ClienteRequest("sememail", "123456");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "semEmail")
-                .chaveValor("senha", "123456")
-                .constroi();
-
-        performRequest(uri, json, 400);
+        performPost(mockMvc, "/clientes", 400, objectMapper, request);
     }
 
     @Test
     public void deveriaRetornarStatus400ComSenhaPequena() throws  Exception {
-        URI uri = new URI("/clientes");
+        ClienteRequest request = new ClienteRequest("email@email.com", "12345");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "12345")
-                .constroi();
-
-        performRequest(uri, json, 400);
+        performPost(mockMvc, "/clientes", 400, objectMapper, request);
     }
 
     @Test
     public void deveriaCadastrarUsuarioComDadosValidos() throws Exception {
-        URI uri = new URI("/clientes");
+        ClienteRequest request = new ClienteRequest("email@email.com", "123456");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "123456")
-                .constroi();
-
-        performRequest(uri, json, 201);
+        performPost(mockMvc, "/clientes", 201, objectMapper, request);
     }
 
     @Test
     public void naoDeveriaCadastrarUsuarioComEmailDuplicado() throws Exception {
-        URI uri = new URI("/clientes");
+        ClienteRequest request = new ClienteRequest("email@email.com", "123456");
 
-        String json = new JsonDataBuilder()
-                .chaveValor("email", "email@email.com")
-                .chaveValor("senha", "123456")
-                .constroi();
+        Cliente novo = request.toModel();
+        manager.persist(novo);
 
-        performRequest(uri, json, 201);
-
-        performRequest(uri, json, 400);
+        performPost(mockMvc, "/clientes", 400, objectMapper, request);
     }
-
 }

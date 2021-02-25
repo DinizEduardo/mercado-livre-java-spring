@@ -44,7 +44,7 @@ public class Produto {
     private Set<ImagemProduto> imagens;
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
-    private List<Opiniao> opinioes;
+    private List<Opiniao> opinioes = new ArrayList<Opiniao>();
 
     public List<Opiniao> adicionaOpiniao(@NotNull Opiniao opiniao) {
         opinioes.add(opiniao);
@@ -131,6 +131,7 @@ public class Produto {
                 '}';
     }
 
+    @Deprecated
     public Produto() {
     }
 

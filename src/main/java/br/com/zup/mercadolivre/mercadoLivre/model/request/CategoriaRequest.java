@@ -19,6 +19,15 @@ public class CategoriaRequest {
     @ExistsId(domainClass = Categoria.class, fieldName = "id")
     private Long idCategoriaMae;
 
+    @Deprecated
+    public CategoriaRequest() {
+    }
+
+    public CategoriaRequest(@NotBlank @NotNull String nome, Long idCategoriaMae) {
+        this.nome = nome;
+        this.idCategoriaMae = idCategoriaMae;
+    }
+
     public Categoria toModel(EntityManager manager) {
         Categoria categoria = new Categoria(nome);
         if(this.idCategoriaMae != null) {
