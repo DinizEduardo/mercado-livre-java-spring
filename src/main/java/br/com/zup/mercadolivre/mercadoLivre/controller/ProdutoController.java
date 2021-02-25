@@ -1,9 +1,12 @@
 package br.com.zup.mercadolivre.mercadoLivre.controller;
 
 import br.com.zup.mercadolivre.mercadoLivre.model.Cliente;
+import br.com.zup.mercadolivre.mercadoLivre.model.Opiniao;
 import br.com.zup.mercadolivre.mercadoLivre.model.Produto;
 import br.com.zup.mercadolivre.mercadoLivre.model.request.NovasImagensRequest;
+import br.com.zup.mercadolivre.mercadoLivre.model.request.OpiniaoRequest;
 import br.com.zup.mercadolivre.mercadoLivre.model.request.ProdutoRequest;
+import br.com.zup.mercadolivre.mercadoLivre.model.response.OpiniaoProdutoResponse;
 import br.com.zup.mercadolivre.mercadoLivre.model.response.ProdutoResponse;
 import br.com.zup.mercadolivre.mercadoLivre.shared.ClienteLogado;
 import br.com.zup.mercadolivre.mercadoLivre.utils.UploaderFake;
@@ -18,6 +21,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -43,7 +48,7 @@ public class ProdutoController {
         return ResponseEntity.created(uri).body(new ProdutoResponse(produto));
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/imagem")
     @Transactional
     public ResponseEntity<ProdutoResponse> adicionarImagens(@PathVariable("id") Long id,
                                                             @Valid NovasImagensRequest form) {
@@ -61,16 +66,25 @@ public class ProdutoController {
         manager.merge(produto);
 
         return ResponseEntity.ok(new ProdutoResponse(produto));
-
     }
 
-    private boolean validaDono(Produto produto) {
+    @PostMapping("/{id}/opinioes")
+    @Transactional
+    public ResponseEntity<OpiniaoProdutoResponse> adicionarOpiniao(@PathVariable long id,
+                                                                   @RequestBody @Valid OpiniaoRequest form) {
 
-        ClienteLogado logado = (ClienteLogado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Produto produto = manager.find(Produto.class, id);
 
-        Cliente cliente = logado.get();
+        Opiniao opiniao = form.toModel(manager, produto);
 
-        return produto.pertenceAoCliente(cliente);
+        produto.adicionaOpiniao(opiniao);
+
+        manager.merge(produto);
+
+//        List<OpiniaoProdutoResponse> opinioesResponse = produto.toOpinioesResponse();
+
+        return ResponseEntity.ok(new OpiniaoProdutoResponse(opiniao));
+
     }
 
 }

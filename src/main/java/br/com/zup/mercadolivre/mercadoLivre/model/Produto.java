@@ -1,11 +1,14 @@
 package br.com.zup.mercadolivre.mercadoLivre.model;
 
+import br.com.zup.mercadolivre.mercadoLivre.model.response.OpiniaoProdutoResponse;
 import br.com.zup.mercadolivre.mercadoLivre.shared.ClienteLogado;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,6 +42,18 @@ public class Produto {
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private Set<ImagemProduto> imagens;
+
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private List<Opiniao> opinioes;
+
+    public List<Opiniao> adicionaOpiniao(@NotNull Opiniao opiniao) {
+        opinioes.add(opiniao);
+        return opinioes;
+    }
+
+    public List<Opiniao> getOpinioes() {
+        return opinioes;
+    }
 
     public Cliente getCliente() {
         return cliente;
@@ -142,5 +157,17 @@ public class Produto {
         Cliente cliente = logado.get();
 
         return this.cliente.equals(cliente);
+    }
+
+    public List<OpiniaoProdutoResponse> toOpinioesResponse() {
+
+        List<OpiniaoProdutoResponse> response = new ArrayList<>();
+
+        this.opinioes.forEach(o -> {
+            response.add(new OpiniaoProdutoResponse(o));
+        });
+
+        return response;
+
     }
 }
